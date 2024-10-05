@@ -16,7 +16,6 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    
 }
 
 .header {
@@ -26,35 +25,70 @@ body {
 .side-main-container {
     display: flex;
     flex-grow: 1;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .left-sidebar {
     background-color: beige;
     height: 100%;
     width: 100px;
+    flex-shrink: 0;
 }
 
 .main-content {
-    background-color: aquamarine;
+    background-color: rgb(227, 255, 127);
     flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .video-container {
-    background-color: yellow;
-    height: 100%;
-    padding: 30px;
+    background-color: rgb(134, 96, 121);
+    width: 90%;
+    height: 90%;
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two columns */
-    grid-template-rows: repeat(2, 1fr);    /* Two rows */
-    gap: 20px; /* Optional: Adds space between grid items */
-    justify-items: center; /* Horizontally centers the grid items */
-    align-items: center;   /* Vertically centers the grid items */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 5px;
+    padding: 30px;
+    justify-items: center;
+    align-items: center;
 }
 
 .video {
     background-color: green;
     border-radius: 30px;
-    width: 550px;
-    height: 350px;
+    width: 100%;
+    height: 100%;
+    max-width: 550px;
+    max-height: 350px;
+    transition: all 0.5s;
+    overflow: hidden;
+}
+
+.footage{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.video:hover{
+    border: 2px solid rgb(37, 177, 15);
+    transform: scale(1.06);
+    transition: all 0.5s;
+}
+
+@media (max-width: 1200px) {
+    .video-container {
+        width: 95%;
+        height: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .video-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
 }
