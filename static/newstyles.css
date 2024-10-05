@@ -1,0 +1,60 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(49, 50, 50);
+    display: flex;
+}
+
+.main-div {
+    background-color: rgb(30, 35, 170);
+    width: 80%;
+    min-width: 400px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.header {
+    background-color: rgb(27, 196, 27);
+}
+
+.side-main-container {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: scroll;
+}
+
+.left-sidebar {
+    background-color: beige;
+    height: 100%;
+    width: 100px;
+}
+
+.main-content {
+    background-color: aquamarine;
+    flex-grow: 1;
+}
+
+.video-container {
+    background-color: yellow;
+    height: 100%;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns */
+    grid-template-rows: repeat(2, 1fr);    /* Two rows */
+    gap: 20px; /* Optional: Adds space between grid items */
+    justify-items: center; /* Horizontally centers the grid items */
+    align-items: center;   /* Vertically centers the grid items */
+}
+
+.video {
+    background-color: green;
+    border-radius: 30px;
+    width: 550px;
+    height: 350px;
+}
