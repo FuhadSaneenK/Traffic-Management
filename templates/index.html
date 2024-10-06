@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/static/styles.css">
     <script src="/static/script.js"></script>
+    <script>
+        function updateVehicleCounts() {
+            fetch('/vehicle_counts')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('.video-container:nth-child(1) .vehicle-count').innerText = `Vehicles: ${data.video1}`;
+                    document.querySelector('.video-container:nth-child(2) .vehicle-count').innerText = `Vehicles: ${data.video2}`;
+                    document.querySelector('.video-container:nth-child(3) .vehicle-count').innerText = `Vehicles: ${data.video3}`;
+                    document.querySelector('.video-container:nth-child(4) .vehicle-count').innerText = `Vehicles: ${data.video4}`;
+                })
+                .catch(error => console.error('Error fetching vehicle counts:', error));
+        }
+
+        // Update counts every 2 seconds
+        setInterval(updateVehicleCounts, 2000);
+    </script>
 </head>
 <body>
     <div class="main-container">
@@ -34,9 +50,7 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <video autoplay loop muted>
-                            <source src="static/assets/video1.mp4" type="video/mp4">
-                        </video>
+                        <img src="/video_feed1" alt="Camera 1 feed">
                     </div>
                 </div>
                 <div class="video-container">
@@ -46,21 +60,17 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <video autoplay loop muted>
-                            <source src="static/assets/video2.mp4" type="video/mp4">
-                        </video>
+                        <img src="/video_feed2" alt="Camera 2 feed">
                     </div>
                 </div>
                 <div class="video-container">
                     <div class="video-info">
-                        <span class="camera-label">Camera 3</span>
-                        <span class="vehicle-count">Vehicles: 18</span>
+                        <span class="camera-label">Camera 2</span>
+                        <span class="vehicle-count">Vehicles: 15</span>
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <video autoplay loop muted>
-                            <source src="static/assets/video2.mp4" type="video/mp4">
-                        </video>
+                        <img src="/video_feed3" alt="Camera 3 feed">
                     </div>
                 </div>
                 <div class="video-container">
@@ -70,9 +80,7 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <video autoplay loop muted>
-                            <source src="static/assets/video1.mp4" type="video/mp4">
-                        </video>
+                        <img src="/video_feed4" alt="Camera 4 feed">
                     </div>
                 </div>
             </div>

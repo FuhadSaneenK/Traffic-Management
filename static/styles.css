@@ -132,7 +132,7 @@ body {
     position: relative;
 }
 
-.video video {
+.video img {
     position: absolute;
     top: 0;
     left: 0;
