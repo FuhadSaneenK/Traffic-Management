@@ -1,0 +1,6 @@
+Step 1 :
+    Install open cv
+Step 2 :
+     install flask opencv-python opencv-python-headless numpy
+Step 3 :
+    

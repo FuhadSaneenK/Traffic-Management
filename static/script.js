@@ -1,26 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const inviteBtn = document.querySelector('.invite-btn');
-    const navButtons = document.querySelectorAll('nav button');
-    const controlButtons = document.querySelectorAll('.control-btn');
+function updateTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { hour12: false });
+    document.getElementById('current-time').textContent = timeString;
+}
 
-    inviteBtn.addEventListener('click', () => {
-        alert('Invite functionality not implemented in this demo.');
-    });
-
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            navButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-        });
-    });
-
-    controlButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (button.classList.contains('end-call')) {
-                alert('Call ended. This is a demo.');
-            } else {
-                button.classList.toggle('active');
-            }
-        });
-    });
-});
+setInterval(updateTime, 1000);
+updateTime();

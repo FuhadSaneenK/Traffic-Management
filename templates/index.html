@@ -3,85 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Conferencing Web App Console</title>
-    <link rel="stylesheet" href="static/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+    <title>Traffic Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/script.js"></script>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <div class="header-left">
-                <button class="icon-button teal"><i data-lucide="video"></i></button>
-                <h1>Design meeting</h1>
-                <span class="badge">Group</span>
-            </div>
-            <div class="header-right">
-                <button class="icon-button gray"><i data-lucide="layout-grid"></i></button>
-                <button class="icon-button gray"><i data-lucide="users"></i></button>
-            </div>
-        </header>
-
-        <div class="video-grid">
-            <div class="video-container">
-                <h1>video</h1>
-                <span class="participant-name">You</span>
-            </div>
-            <div class="video-container">
-                <h1>video</h1>
-                <span class="participant-name">Michele Smith</span>
-            </div>
-            <div class="video-container">
-                <h1>video</h1>
-                <span class="participant-name">Bella Wilson</span>
-            </div>
-            <div class="video-container">
-                <h1>video</h1>
-                <span class="participant-name">Jane Lorrins</span>
-            </div>
-        </div>
-
-        <div class="control-bar">
-            <button class="icon-button gray"><i data-lucide="layout-grid"></i></button>
-            <button class="icon-button gray"><i data-lucide="volume-2"></i></button>
-            <button class="icon-button gray"><i data-lucide="mic"></i></button>
-            <button class="icon-button red"><i data-lucide="phone-off"></i></button>
-            <button class="icon-button gray"><i data-lucide="video"></i></button>
-            <button class="icon-button gray"><i data-lucide="settings"></i></button>
-        </div>
-
-        <div class="bottom-section">
-            <div class="management-section">
-                <h2>Management</h2>
-                <div class="poll">
-                    <h3>Poll</h3>
-                    <p>What do you think about the meeting?</p>
-                    <div class="poll-option">
-                        <input type="radio" id="option1" name="poll">
-                        <label for="option1">Pretty good conversation</label>
+    <div class="main-container">
+        <nav class="left-sidebar">
+            <i class="fas fa-home"></i>
+            <i class="fas fa-chart-bar"></i>
+            <i class="fas fa-cog"></i>
+        </nav>
+        <main class="content">
+            <header class="header">
+                <div class="header-left">
+                    <i class="fas fa-traffic-light"></i>
+                    <h1>Traffic Simulator</h1>
+                </div>
+                <div class="header-right">
+                    <span id="current-time">12:00:00</span>
+                    <button class="header-button">New Simulation</button>
+                </div>
+            </header>
+            <div class="video-grid">
+                <div class="video-container">
+                    <div class="video-info">
+                        <span class="camera-label">Camera 1</span>
+                        <span class="vehicle-count">Vehicles: 15</span>
+                        <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
-                    <div class="poll-option">
-                        <input type="radio" id="option2" name="poll" checked>
-                        <label for="option2">This is awesome!</label>
+                    <div class="video">
+                        <video autoplay loop muted>
+                            <source src="static/assets/video1.mp4" type="video/mp4">
+                        </video>
                     </div>
-                    <div class="poll-option">
-                        <input type="radio" id="option3" name="poll">
-                        <label for="option3">Could be a lot better</label>
+                </div>
+                <div class="video-container">
+                    <div class="video-info">
+                        <span class="camera-label">Camera 2</span>
+                        <span class="vehicle-count">Vehicles: 23</span>
+                        <span class="time-slot">Time: 08:00 - 09:00</span>
+                    </div>
+                    <div class="video">
+                        <video autoplay loop muted>
+                            <source src="static/assets/video2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-container">
+                    <div class="video-info">
+                        <span class="camera-label">Camera 3</span>
+                        <span class="vehicle-count">Vehicles: 18</span>
+                        <span class="time-slot">Time: 08:00 - 09:00</span>
+                    </div>
+                    <div class="video">
+                        <video autoplay loop muted>
+                            <source src="static/assets/video2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+                <div class="video-container">
+                    <div class="video-info">
+                        <span class="camera-label">Camera 4</span>
+                        <span class="vehicle-count">Vehicles: 20</span>
+                        <span class="time-slot">Time: 08:00 - 09:00</span>
+                    </div>
+                    <div class="video">
+                        <video autoplay loop muted>
+                            <source src="static/assets/video1.mp4" type="video/mp4">
+                        </video>
                     </div>
                 </div>
             </div>
-            <div class="todo-section">
-                <h2>To Do</h2>
-                <ul class="todo-list">
-                    <li><input type="checkbox" checked> Create Dribbble shot about last project</li>
-                    <li><input type="checkbox" checked> Animation in Principle</li>
-                    <li><input type="checkbox" checked> Icons for app navigation and homepage</li>
-                    <li><input type="checkbox"> Talk to Jane</li>
-                </ul>
+        </main>
+        <aside class="right-sidebar">
+            <h2>Simulation Dashboard</h2>
+            <div class="stat-item">
+                <h3>Average Speed</h3>
+                <div class="stat-value">42 mph</div>
             </div>
-        </div>
+            <div class="stat-item">
+                <h3>Traffic Density</h3>
+                <div class="stat-value">65%</div>
+            </div>
+            <div class="stat-item">
+                <h3>Accidents</h3>
+                <div class="stat-value">0</div>
+            </div>
+            <div class="controls">
+                <button class="control-btn">Start Simulation</button>
+                <button class="control-btn">Pause Simulation</button>
+                <button class="control-btn">Reset Simulation</button>
+            </div>
+        </aside>
     </div>
-    <script>
-        lucide.createIcons();
-    </script>
 </body>
 </html>
