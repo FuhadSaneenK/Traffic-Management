@@ -12,7 +12,7 @@
             fetch('/vehicle_counts')
                 .then(response => response.json())
                 .then(data => {
-                    document.querySelector('.video-container:nth-child(1) .vehicle-count').innerText = `Vehicles: ${data.video1}`;
+                    document.querySelector('.video-container:nth-child(1) .vehicle-count').innerText = `Vehicles: ${data.camera1}`;
                     document.querySelector('.video-container:nth-child(2) .vehicle-count').innerText = `Vehicles: ${data.video2}`;
                     document.querySelector('.video-container:nth-child(3) .vehicle-count').innerText = `Vehicles: ${data.video3}`;
                     document.querySelector('.video-container:nth-child(4) .vehicle-count').innerText = `Vehicles: ${data.video4}`;
