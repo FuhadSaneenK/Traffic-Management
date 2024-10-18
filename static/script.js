@@ -53,7 +53,7 @@ function setupSimulationControls() {
     });
 }
 
-// Update vehicle counts (example function)
+// Update vehicle counts 
 // Update vehicle counts
 function updateVehicleCounts() {
     fetch('/vehicle_counts')
