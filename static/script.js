@@ -1,5 +1,9 @@
 // traffic-simulator.js
 
+let currentVideoIndex = 0;
+const videoCount = 4; // Total number of videos
+let timer;
+
 // Timer functionality
 function startTimer() {
     let timeLeft = 10;
@@ -13,12 +17,25 @@ function startTimer() {
             timeLeft--;
             setTimeout(updateTimer, 1000);
         } else {
-            timeLeft = 10;
+            timeLeft = 10; // Reset timer
+            currentVideoIndex = (currentVideoIndex + 1) % videoCount; // Cycle through videos
+            playCurrentVideo();
             updateTimer();
         }
     }
     
     updateTimer();
+}
+
+// Function to play the current video
+function playCurrentVideo() {
+    // Hide all videos
+    for (let i = 1; i <= videoCount; i++) {
+        document.getElementById(`video${i}`).style.display = 'none';
+    }
+    
+    // Show the current video
+    document.getElementById(`video${currentVideoIndex + 1}`).style.display = 'block';
 }
 
 // Update current time in the header
@@ -31,52 +48,11 @@ function updateCurrentTime() {
     }, 1000);
 }
 
-// Simulation control buttons functionality
-function setupSimulationControls() {
-    const startBtn = document.getElementById('start-btn');
-    const pauseBtn = document.getElementById('pause-btn');
-    const resetBtn = document.getElementById('reset-btn');
-
-    startBtn.addEventListener('click', () => {
-        console.log('Simulation started');
-        // Add logic to start the simulation
-    });
-
-    pauseBtn.addEventListener('click', () => {
-        console.log('Simulation paused');
-        // Add logic to pause the simulation
-    });
-
-    resetBtn.addEventListener('click', () => {
-        console.log('Simulation reset');
-        // Add logic to reset the simulation
-    });
-}
-
-// Update vehicle counts 
-// Update vehicle counts
-function updateVehicleCounts() {
-    fetch('/vehicle_counts')
-        .then(response => response.json())
-        .then(data => {
-            document.querySelector('.video-container:nth-child(1) .vehicle-count').innerText = `Vehicles: ${data.camera1}`;
-            document.querySelector('.video-container:nth-child(2) .vehicle-count').innerText = `Vehicles: ${data.camera2}`;
-            document.querySelector('.video-container:nth-child(3) .vehicle-count').innerText = `Vehicles: ${data.camera3}`;
-            document.querySelector('.video-container:nth-child(4) .vehicle-count').innerText = `Vehicles: ${data.camera4}`;
-        })
-        .catch(error => console.error('Error fetching vehicle counts:', error));
-}
-
-
 // Initialize all functionalities
 function initializeSimulator() {
     startTimer();
     updateCurrentTime();
-    // setupSimulationControls();
-    // updateVehicleCounts();
-    
-    // Update vehicle counts every 5 seconds (for demonstration)
-    setInterval(updateVehicleCounts, 5000);
+    playCurrentVideo(); // Start with the first video
 }
 
 // Run initialization when DOM is fully loaded

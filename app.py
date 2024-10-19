@@ -32,7 +32,7 @@ def detect_vehicles_from_camera(stream_url, video_key):
                 byte_stream += chunk
                 a = byte_stream.find(b'\xff\xd8')
                 b = byte_stream.find(b'\xff\xd9')
-                
+
                 if a != -1 and b != -1:
                     jpg = byte_stream[a:b+2]
                     byte_stream = byte_stream[b+2:]

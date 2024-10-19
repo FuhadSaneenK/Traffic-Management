@@ -20,7 +20,7 @@
                 .catch(error => console.error('Error fetching vehicle counts:', error));
         }
 
-        // Update counts every 2 seconds
+        // Update vehicle counts every 2 seconds
         setInterval(updateVehicleCounts, 2000);
     </script>
 </head>
@@ -50,7 +50,7 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <img src="/video_feed1" alt="Camera 1 feed">
+                        <img id="video1" src="/video_feed1" alt="Camera 1 feed">
                     </div>
                 </div>
                 <div class="video-container">
@@ -60,17 +60,17 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <img src="/video_feed2" alt="Camera 2 feed">
+                        <img id="video2" src="/video_feed2" alt="Camera 2 feed">
                     </div>
                 </div>
                 <div class="video-container">
                     <div class="video-info">
-                        <span class="camera-label">Camera 2</span>
+                        <span class="camera-label">Camera 3</span>
                         <span class="vehicle-count">Vehicles: 15</span>
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <img src="/video_feed3" alt="Camera 3 feed">
+                        <img id="video3" src="/video_feed3" alt="Camera 3 feed">
                     </div>
                 </div>
                 <div class="video-container">
@@ -80,10 +80,11 @@
                         <span class="time-slot">Time: 08:00 - 09:00</span>
                     </div>
                     <div class="video">
-                        <img src="/video_feed4" alt="Camera 4 feed">
+                        <img id="video4" src="/video_feed4" alt="Camera 4 feed">
                     </div>
                 </div>
             </div>
+            
         </main>
         <aside class="right-sidebar">
             <h2>Simulation Dashboard</h2>
@@ -109,7 +110,6 @@
                 <h2>Timer</h2>
                 <div id="timer-display" class="timer-display">00:00:30</div>
             </div>
-
         </aside>
     </div>
 </body>
