@@ -3,6 +3,20 @@
 let currentVideoIndex = 0;
 const videoCount = 4; // Total number of videos
 let timer;
+let feedIntervals = [];
+
+// Function to start or resume a feed
+function startFeed(feedIndex) {
+    const img = document.getElementById(`video${feedIndex + 1}`);
+    feedIntervals[feedIndex] = setInterval(() => {
+        img.src = `/video_feed${feedIndex + 1}?t=${new Date().getTime()}`;
+    }, 1000); // Adjust this interval based on your feed update frequency
+}
+
+// Function to pause a feed
+function pauseFeed(feedIndex) {
+    clearInterval(feedIntervals[feedIndex]);
+}
 
 // Timer functionality
 function startTimer() {
@@ -15,11 +29,13 @@ function startTimer() {
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timeLeft--;
-            setTimeout(updateTimer, 1000);
+            timer = setTimeout(updateTimer, 1000);
         } else {
             timeLeft = 10; // Reset timer
+            pauseFeed(currentVideoIndex);
             currentVideoIndex = (currentVideoIndex + 1) % videoCount; // Cycle through videos
-            playCurrentVideo();
+            startFeed(currentVideoIndex);
+            updateTrafficLights(currentVideoIndex + 1);
             updateTimer();
         }
     }
@@ -27,15 +43,21 @@ function startTimer() {
     updateTimer();
 }
 
-// Function to play the current video
-function playCurrentVideo() {
-    // Hide all videos
-    for (let i = 1; i <= videoCount; i++) {
-        document.getElementById(`video${i}`).style.display = 'none';
-    }
-    
-    // Show the current video
-    document.getElementById(`video${currentVideoIndex + 1}`).style.display = 'block';
+// Function to update traffic lights and video states
+function updateTrafficLights(activeVideoIndex) {
+    const containers = document.querySelectorAll('.video-container');
+    containers.forEach((container, index) => {
+        if (index + 1 === activeVideoIndex) {
+            container.classList.add('active');
+            container.classList.remove('red', 'yellow');
+            container.classList.add('green');
+            startFeed(index);
+        } else {
+            container.classList.remove('active', 'green', 'yellow');
+            container.classList.add('red');
+            pauseFeed(index);
+        }
+    });
 }
 
 // Update current time in the header
@@ -52,8 +74,38 @@ function updateCurrentTime() {
 function initializeSimulator() {
     startTimer();
     updateCurrentTime();
-    playCurrentVideo(); // Start with the first video
+    updateTrafficLights(1); // Start with the first video active
 }
 
 // Run initialization when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', initializeSimulator);
+
+// Add event listeners for control buttons
+document.addEventListener('DOMContentLoaded', () => {
+    const startButton = document.querySelector('.control-btn:nth-child(1)');
+    const pauseButton = document.querySelector('.control-btn:nth-child(2)');
+    const resetButton = document.querySelector('.control-btn:nth-child(3)');
+
+    startButton.addEventListener('click', () => {
+        // Start the simulation logic
+        startTimer();
+        startFeed(currentVideoIndex);
+    });
+
+    pauseButton.addEventListener('click', () => {
+        // Pause the simulation logic
+        clearTimeout(timer);
+        pauseFeed(currentVideoIndex);
+    });
+
+    resetButton.addEventListener('click', () => {
+        // Reset the simulation logic
+        clearTimeout(timer);
+        feedIntervals.forEach((interval, index) => {
+            clearInterval(interval);
+        });
+        currentVideoIndex = 0;
+        updateTrafficLights(1);
+        startTimer();
+    });
+});
