@@ -16,7 +16,7 @@ def video_feed1():
 
 @app.route('/video_feed2')
 def video_feed2():
-    return Response(detect_vehicles('static/assets/video2.mp4', 'video2'),
+    return Response(detect_vehicles('static/assets/video6.mp4', 'video2'),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed3')
