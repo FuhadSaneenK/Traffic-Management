@@ -5,20 +5,38 @@ let feedIntervals = [];
 let isRunning = false;
 let vehicleCounts = [0, 0, 0, 0];
 
-// Function to start or resume a feed
+// Update vehicle counts
+function updateVehicleCounts() {
+    fetch('/vehicle_counts')
+        .then(response => response.json())
+        .then(data => {
+            document.querySelector('.video-container:nth-child(1) .vehicle-count').innerText = `Vehicles: ${data.camera1}`;
+            document.querySelector('.video-container:nth-child(2) .vehicle-count').innerText = `Vehicles: ${data.video2}`;
+            document.querySelector('.video-container:nth-child(3) .vehicle-count').innerText = `Vehicles: ${data.video3}`;
+            document.querySelector('.video-container:nth-child(4) .vehicle-count').innerText = `Vehicles: ${data.video4}`;
+            
+            // Store the current lane vehicle count
+            vehicleCounts[currentVideoIndex] = data[`video${currentVideoIndex + 2}`] || 0;
+        })
+        .catch(error => console.error('Error fetching vehicle counts:', error));
+}
+
+// Update vehicle counts every 2 seconds
+setInterval(updateVehicleCounts, 2000);
+
 function startFeed(feedIndex) {
-    // Clear any existing interval first
     if (feedIntervals[feedIndex]) {
         clearInterval(feedIntervals[feedIndex]);
     }
     
     const img = document.getElementById(`video${feedIndex + 1}`);
+    img.src = `/video_feed${feedIndex + 1}?t=${new Date().getTime()}`;
+
     feedIntervals[feedIndex] = setInterval(() => {
         img.src = `/video_feed${feedIndex + 1}?t=${new Date().getTime()}`;
-    }, 1000);
+    }, 1000 * 60);
 }
 
-// Function to pause a feed
 function pauseFeed(feedIndex) {
     if (feedIntervals[feedIndex]) {
         clearInterval(feedIntervals[feedIndex]);
@@ -26,42 +44,31 @@ function pauseFeed(feedIndex) {
     }
 }
 
-// Function to take screenshots of all lanes
 function takeAllScreenshots() {
-    for (let i = 0; i < videoCount; i++) {
-        const img = document.getElementById(`video${i + 1}`);
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-        
-        canvas.toBlob((blob) => {
-            const formData = new FormData();
-            formData.append('screenshot', blob, `screenshot_video${i + 1}.png`);
-            formData.append('videoIndex', i);
-            
-            fetch('/save_screenshot', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(`Screenshot saved for lane ${i + 1}:`, data);
-                vehicleCounts[i] = data.vehicleCount;
-                
-                // Update vehicle count display
-                const countElement = document.querySelector(`.video-container:nth-child(${i + 1}) .vehicle-count`);
-                if (countElement) {
-                    countElement.textContent = `Vehicles: ${data.vehicleCount}`;
-                }
-            })
-            .catch(error => console.error(`Error saving screenshot for lane ${i + 1}:`, error));
-        }, 'image/png');
-    }
+    const currentLaneCount = vehicleCounts[currentVideoIndex];
+    console.log(currentLaneCount);
+
+    return fetch('/calculate_duration', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            currentLaneCount: currentLaneCount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.nextDuration = data.duration;
+        return data.duration;
+    })
+    .catch(error => {
+        console.error('Error calculating duration:', error);
+        window.nextDuration = 60; // Default fallback duration
+        return 60;
+    });
 }
 
-
-// Improved timer functionality
 function startTimer(initialDuration) {
     if (timer) {
         clearTimeout(timer);
@@ -79,45 +86,50 @@ function startTimer(initialDuration) {
             const seconds = timeLeft % 60;
             timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             
-            // Take screenshots of all lanes when 5 seconds remain
             if (timeLeft === 5) {
-                takeAllScreenshots();
+                takeAllScreenshots()
+                    .then(duration => {
+                        // Store the duration for use after current timer ends
+                        window.nextDuration = duration;
+                    })
+                    .catch(error => {
+                        console.error("Error in calculating new duration:", error);
+                        window.nextDuration = 60; // Default duration
+                    });
             }
-            
+
             timeLeft--;
             timer = setTimeout(updateTimer, 1000);
         } else {
-            // Calculate next duration based on updated vehicle counts
-            fetch('/calculate_duration', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ vehicleCounts: vehicleCounts })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (isRunning) {
-                    pauseFeed(currentVideoIndex);
-                    currentVideoIndex = (currentVideoIndex + 1) % videoCount;
-                    startFeed(currentVideoIndex);
-                    updateTrafficLights(currentVideoIndex + 1);
-                    console.log(`Switching to lane ${currentVideoIndex + 1} with duration: ${data.duration}s`);
-                    startTimer(data.duration);
-                }
-            })
-            .catch(error => {
-                console.error('Error calculating duration:', error);
-                if (isRunning) {
-                    startTimer(10); // Fallback to minimum duration
-                }
-            });
+            // Timer has ended, switch to the next video feed
+            if (isRunning) {
+                switchToNextLane();
+            }
         }
     }
 
     updateTimer();
 }
-// Improved traffic light update function
+
+function switchToNextLane() {
+    // Pause current feed
+    pauseFeed(currentVideoIndex);
+    
+    // Switch to next lane
+    currentVideoIndex = (currentVideoIndex + 1) % videoCount;
+    
+    // Update traffic lights
+    updateTrafficLights(currentVideoIndex + 1);
+    
+    // Start new feed
+    startFeed(currentVideoIndex);
+    
+    // Start timer with stored duration or default
+    const duration = window.nextDuration || 10;
+    window.nextDuration = null; // Clear stored duration
+    startTimer(duration);
+}
+
 function updateTrafficLights(activeVideoIndex) {
     const containers = document.querySelectorAll('.video-container');
     containers.forEach((container, index) => {
@@ -135,7 +147,6 @@ function updateTrafficLights(activeVideoIndex) {
     });
 }
 
-// Improved current time update function
 function updateCurrentTime() {
     const currentTimeElement = document.getElementById('current-time');
     if (!currentTimeElement) return;
@@ -151,18 +162,16 @@ function updateCurrentTime() {
         currentTimeElement.textContent = timeString;
     }
 
-    // Update immediately and then every second
     updateTime();
     return setInterval(updateTime, 1000);
 }
 
-// Improved initialization function
 function initializeSimulator() {
     isRunning = false;
     currentVideoIndex = 0;
     vehicleCounts = [0, 0, 0, 0];
+    window.nextDuration = null;
     
-    // Clear any existing intervals
     if (timer) clearTimeout(timer);
     feedIntervals.forEach(interval => {
         if (interval) clearInterval(interval);
@@ -173,20 +182,15 @@ function initializeSimulator() {
     document.getElementById('timer-display').textContent = '00:00';
 }
 
-// Improved event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    // Start the current time update
     updateCurrentTime();
-    
-    // Initialize the simulator
     initializeSimulator();
 
-    // Set up control buttons
-    const startButton = document.querySelector('.control-btn:nth-child(1)');
-    const pauseButton = document.querySelector('.control-btn:nth-child(2)');
-    const resetButton = document.querySelector('.control-btn:nth-child(3)');
+    const startButton = document.querySelector('.controls button:nth-child(1)');
+    const pauseButton = document.querySelector('.controls button:nth-child(2)');
+    const resetButton = document.querySelector('.controls button:nth-child(3)');
 
-    startButton.addEventListener('click', () => {
+    startButton?.addEventListener('click', () => {
         if (!isRunning) {
             isRunning = true;
             fetch('/initial_duration')
@@ -197,12 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(error => {
                     console.error('Error getting initial duration:', error);
-                    startTimer(15); // Fallback duration
+                    startTimer(60); // Default fallback duration
                 });
         }
     });
 
-    pauseButton.addEventListener('click', () => {
+    pauseButton?.addEventListener('click', () => {
         isRunning = false;
         if (timer) {
             clearTimeout(timer);
@@ -216,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    resetButton.addEventListener('click', () => {
+    resetButton?.addEventListener('click', () => {
         isRunning = false;
         if (timer) {
             clearTimeout(timer);
